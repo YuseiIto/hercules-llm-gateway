@@ -14,6 +14,10 @@ EXPOSE 4000
 # ENV OPENROUTER_API_KEY=your_key_here
 # ENV HERCULES_OLLAMA_BASE_URL=http://host.docker.internal:11434
 
+# Enable http/2
+# https://docs.litellm.ai/docs/proxy/deploy#3-http2-with-hypercorn
+RUN pip install hypercorn
+
 # Start the LiteLLM proxy
 ENTRYPOINT ["litellm"]
 CMD ["--config", "/app/config.yaml", "--port", "4000"]
