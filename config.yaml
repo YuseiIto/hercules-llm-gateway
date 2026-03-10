@@ -72,3 +72,4 @@ general_settings:
 
 general_settings:
   disable_db_auth: true
+  block_robots: true
