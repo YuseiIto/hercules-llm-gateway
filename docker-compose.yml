@@ -38,7 +38,9 @@ services:
     image: prom/prometheus
     volumes:
       - /data/litellm/prometheus:/prometheus
-      - /data/litellm/prometheus.yml:/etc/prometheus/prometheus.yml
+    configs:
+      - source: prometheus_config
+        target: /etc/prometheus/prometheus.yml
     ports:
       - "9090:9090"
     command:
@@ -46,4 +48,8 @@ services:
       - "--storage.tsdb.path=/prometheus"
       - "--storage.tsdb.retention.time=15d"
     restart: always
+
+configs:
+  prometheus_config:
+    file: ./prometheus.yml
 
