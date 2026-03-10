@@ -6,6 +6,7 @@ services:
     environment:
       DATABASE_URL: "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}"
       STORE_MODEL_IN_DB: "True"
+      LITELLM_MASTER_KEY: "${LITELLM_MASTER_KEY}"
     depends_on:
       - db
     healthcheck:
