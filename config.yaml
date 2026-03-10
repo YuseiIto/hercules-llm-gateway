@@ -1,0 +1,74 @@
+model_list:
+  # =========================================
+  # A. Force specific provider based on prefix
+  # =========================================
+
+  # Prefix "lm_studio/"
+  - model_name: "lm_studio/*"
+    litellm_params:
+      model: "lm_studio/*" # LM Studio provides OpenAI-compatible API
+      litellm_credential_name: hercules_lmstudio_cred
+
+  # Prefix "ollama/"
+  - model_name: "ollama/*"
+    litellm_params:
+      model: "ollama/*"
+      litellm_credential_name: hercules_ollama_cred
+
+  # Prefix "openrouter/"
+  - model_name: "openrouter/*"
+    litellm_params:
+      model: "openrouter/*"
+      litellm_credential_name: default_openrouter_cred
+
+  # =========================================
+  # C. Fallback（LM Studio -> Ollama -> OpenRouter）
+  # Fallback order is defined in router_settings below
+  # =========================================
+  
+  - model_name: "qwen3.5-35b-a3b"
+    litellm_params:
+      model: "lm_studio/qwen3.5-35b-a3b"
+      litellm_credential_name: hercules_lmstudio_cred
+
+  # =========================================
+  # D. Catch All
+  # - Everything else falls back to OpenRouter
+  # =========================================
+  - model_name: "*"
+    litellm_params:
+      model: "openrouter/*"
+      litellm_credential_name: default_openrouter_cred
+
+router_settings:
+  fallbacks:
+    - "qwen3.5-35b-a3b": ["ollama/qwen3.5-35b-a3b", "openrouter/alibaba/qwen3.5-35b-a3b"]
+
+credential_list:
+  - credential_name: default_openrouter_cred
+    credential_values:
+      api_key: os.environ/OPENROUTER_API_KEY
+      api_base: "https://openrouter.ai/api/v1"
+    credential_info:
+      description: "Default OpenRouter credential. Capped $20/month."
+
+  - credential_name: hercules_ollama_cred
+    credential_values:
+      api_key: os.environ/HERCULES_OLLAMA_API_KEY
+      api_base: os.environ/HERCULES_OLLAMA_BASE_URL
+    credential_info:
+      description: "Hercules Ollama credential. For internal use only."
+
+  - credential_name: hercules_lmstudio_cred 
+    credential_values:
+      api_key: os.environ/HERCULES_LM_STUDIO_API_KEY
+      api_base: os.environ/HERCULES_LM_STUDIO_API_BASE
+    credential_info:
+      description: "Hercules LM Studio credential. For internal use only."
+
+general_settings:
+  proxy_keys:
+    - os.environ/LITELLM_API_KEY
+
+general_settings:
+  disable_db_auth: true
