@@ -51,5 +51,12 @@ services:
 
 configs:
   prometheus_config:
-    file: ./prometheus.yml
+    content: |
+      global:
+        scrape_interval: 15s
+
+      scrape_configs:
+        - job_name: 'litellm'
+          static_configs:
+            - targets: ['litellm:4000']
 
