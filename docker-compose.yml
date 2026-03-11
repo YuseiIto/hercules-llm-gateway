@@ -7,6 +7,8 @@ services:
       DATABASE_URL: "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}"
       STORE_MODEL_IN_DB: "True"
       LITELLM_MASTER_KEY: "${LITELLM_MASTER_KEY}"
+    volumes:
+      - ./config.yaml:/app/config.yaml
     depends_on:
       - db
     healthcheck:
@@ -39,9 +41,7 @@ services:
     image: prom/prometheus
     volumes:
       - /data/litellm/prometheus:/prometheus
-    configs:
-      - source: prometheus_config
-        target: /etc/prometheus/prometheus.yml
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
     ports:
       - "9090:9090"
     command:
@@ -49,15 +49,3 @@ services:
       - "--storage.tsdb.path=/prometheus"
       - "--storage.tsdb.retention.time=15d"
     restart: always
-
-configs:
-  prometheus_config:
-    content: |
-      global:
-        scrape_interval: 15s
-
-      scrape_configs:
-        - job_name: 'litellm'
-          static_configs:
-            - targets: ['litellm:4000']
-

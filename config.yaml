@@ -67,9 +67,5 @@ credential_list:
       description: "Hercules LM Studio credential. For internal use only."
 
 general_settings:
-  proxy_keys:
-    - os.environ/LITELLM_API_KEY
-
-general_settings:
   disable_db_auth: true
   block_robots: true
