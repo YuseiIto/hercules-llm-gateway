@@ -69,3 +69,8 @@ credential_list:
 general_settings:
   disable_db_auth: true
   block_robots: true
+
+litellm_settings:
+  drop_params: True
+  success_callback: ["langfuse"]
+  redact_user_api_key_info: true
